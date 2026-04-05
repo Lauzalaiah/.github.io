@@ -8,7 +8,8 @@ async function saveToDB(data: any) {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
+    const formData = await req.formData()
+    const text = formData.get('text') || ''
     const { name, email, country, cleanInsta } = body
 
     const safe = (v: any) => String(v || '').trim()
