@@ -30,3 +30,8 @@ export async function POST(req: Request) {
     )
   }
 }
+
+// 👉 GET (test navigateur)
+export async function GET() {
+  return NextResponse.json({ test: 'ok' })
+}
