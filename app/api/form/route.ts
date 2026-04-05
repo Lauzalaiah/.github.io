@@ -9,12 +9,13 @@ async function saveToDB(data: any) {
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData()
+
     const text =
-      formData.get('name') +
+      (formData.get('name') || '').toString() +
       ' | ' +
-      formData.get('instagram') +
+      (formData.get('instagram') || '').toString() +
       ' | ' +
-      formData.get('email')
+      (formData.get('email') || '').toString()
     const { name, email, country, cleanInsta } = body
 
     const safe = (v: any) => String(v || '').trim()
