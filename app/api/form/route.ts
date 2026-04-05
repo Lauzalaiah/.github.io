@@ -4,30 +4,26 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
-    const name = (formData.get('name') || '').toString()
-    const instagram = (formData.get('instagram') || '').toString()
-    const email = (formData.get('email') || '').toString()
+    const name = formData.get('name')
+    const instagram = formData.get('instagram')
+    const email = formData.get('email')
 
-    const text = `${name} | ${instagram} | ${email}`
-
-    // DEBUG (tu peux voir ça dans logs Vercel)
-    console.log('FORM RECEIVED:', { name, instagram, email })
+    console.log('RAW:', { name, instagram, email })
 
     return NextResponse.json({
       status: 'ok',
-      name,
-      instagram,
-      email,
-      text
+      name: name ? String(name) : '',
+      instagram: instagram ? String(instagram) : '',
+      email: email ? String(email) : ''
     })
 
   } catch (error: any) {
-    console.error('ERROR:', error)
+    console.error('CRASH:', error)
 
     return NextResponse.json(
       {
         status: 'error',
-        message: error?.message || 'Unknown error'
+        message: error?.message || 'Unknown'
       },
       { status: 500 }
     )
