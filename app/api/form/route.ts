@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const instagram = formData.get('instagram')
     const email = formData.get('email')
 
-    console.log('RAW:', { name, instagram, email })
+    console.log('FORM DATA:', { name, instagram, email })
 
     return NextResponse.json({
       status: 'ok',
@@ -18,12 +18,13 @@ export async function POST(req: Request) {
     })
 
   } catch (error: any) {
-    console.error('CRASH:', error)
+    console.error('REAL ERROR:', error)
 
     return NextResponse.json(
       {
         status: 'error',
-        message: error?.message || 'Unknown'
+        message: error?.message,
+        stack: error?.stack
       },
       { status: 500 }
     )
