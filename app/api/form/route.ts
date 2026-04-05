@@ -1,37 +1,33 @@
 import { NextResponse } from 'next/server'
 
+export async function GET() {
+  return NextResponse.json({ test: 'ok' })
+}
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
-    const name = formData.get('name')
-    const instagram = formData.get('instagram')
-    const email = formData.get('email')
-
-    console.log('FORM DATA:', { name, instagram, email })
+    const name = formData.get('name')?.toString() || ''
+    const instagram = formData.get('instagram')?.toString() || ''
+    const email = formData.get('email')?.toString() || ''
 
     return NextResponse.json({
       status: 'ok',
-      name: name ? String(name) : '',
-      instagram: instagram ? String(instagram) : '',
-      email: email ? String(email) : ''
+      data: {
+        name,
+        instagram,
+        email
+      }
     })
 
   } catch (error: any) {
-    console.error('REAL ERROR:', error)
-
     return NextResponse.json(
       {
         status: 'error',
-        message: error?.message,
-        stack: error?.stack
+        message: error?.message || 'unknown error'
       },
       { status: 500 }
     )
   }
-}
-
-// 👉 GET (test navigateur)
-export async function GET() {
-  return NextResponse.json({ test: 'ok' })
 }
