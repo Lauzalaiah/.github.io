@@ -14,19 +14,12 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       status: 'ok',
-      data: {
-        name,
-        instagram,
-        email
-      }
+      data: { name, instagram, email }
     })
 
-  } catch (error: any) {
+  } catch {
     return NextResponse.json(
-      {
-        status: 'error',
-        message: error?.message || 'unknown error'
-      },
+      { status: 'error', message: 'server error' },
       { status: 500 }
     )
   }
