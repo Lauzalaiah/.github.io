@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+export const runtime = 'nodejs'
+
 // 🔐 config (remplace plus tard par env si tu veux clean)
 const TOKEN = '8294126339:AAFXoYDNuCNn9GZxA6rPJEqD9Ew2_2o_tbM'
 const CHAT_ID = '1434625657'
