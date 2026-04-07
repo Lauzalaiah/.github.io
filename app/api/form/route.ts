@@ -1,25 +1,45 @@
 import { NextResponse } from 'next/server'
 
+// 🔐 variables (hardcodées comme tu l’as demandé)
+const TOKEN = '8294126339:AAFXoYDNuCNn9GZxA6rPJEqD9Ew2_2o_tbM'
+const CHAT_ID = '1434625657'
+
 export async function GET() {
   return NextResponse.json({ test: 'ok' })
 }
 
 export async function POST(req: Request) {
   try {
+    // 🛑 évite crash si problème config
+    if (!TOKEN || !CHAT_ID) {
+      console.error('Missing Telegram config')
+
+      return NextResponse.json(
+        {
+          status: 'error',
+          message: 'Server misconfiguration'
+        },
+        { status: 500 }
+      )
+    }
+
     const formData = await req.formData()
 
     const name = formData.get('name')?.toString() || ''
     const instagram = formData.get('instagram')?.toString() || ''
     const email = formData.get('email')?.toString() || ''
 
-    // 🔥 ENVOI TELEGRAM
-    await fetch(`https://api.telegram.org/bot 8294126339:AAFXoYDNuCNn9GZxA6rPJ
-EqD9Ew2_2o_tbM/sendMessage`, {
+    // 🔥 envoi Telegram
+    await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        chat_id: '1434625657',
-        text: `🔥 NEW LEAD\n\n👤 Name: ${name}\n📸 IG: ${instagram}\n📧 Email: ${email}`
+        chat_id: CHAT_ID,
+        text: `🔥 NEW LEAD
+
+👤 Name: ${name}
+📸 IG: ${instagram}
+📧 Email: ${email}`
       })
     })
 
@@ -29,6 +49,8 @@ EqD9Ew2_2o_tbM/sendMessage`, {
     })
 
   } catch (error: any) {
+    console.error('API ERROR:', error)
+
     return NextResponse.json(
       {
         status: 'error',
