@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-// 🔐 variables (hardcodées comme tu l’as demandé)
+// 🔐 config (remplace plus tard par env si tu veux clean)
 const TOKEN = '8294126339:AAFXoYDNuCNn9GZxA6rPJEqD9Ew2_2o_tbM'
 const CHAT_ID = '1434625657'
 
@@ -10,7 +10,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    // 🛑 évite crash si problème config
+    // 🛑 sécurité config
     if (!TOKEN || !CHAT_ID) {
       console.error('Missing Telegram config')
 
@@ -29,19 +29,26 @@ export async function POST(req: Request) {
     const instagram = formData.get('instagram')?.toString() || ''
     const email = formData.get('email')?.toString() || ''
 
-    // 🔥 envoi Telegram
-    await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: CHAT_ID,
-        text: `🔥 NEW LEAD
+    // 🔥 ENVOI TELEGRAM + DEBUG
+    const telegramRes = await fetch(
+      `https://api.telegram.org/bot${TOKEN}/sendMessage`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: `🔥 NEW LEAD
 
 👤 Name: ${name}
 📸 IG: ${instagram}
 📧 Email: ${email}`
-      })
-    })
+        })
+      }
+    )
+
+    const telegramData = await telegramRes.json()
+
+    console.log('TELEGRAM:', telegramData)
 
     return NextResponse.json({
       status: 'ok',
