@@ -8,9 +8,9 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
-    const name = formData.get('name')?.toString() || ''
-    const instagram = formData.get('instagram')?.toString() || ''
-    const email = formData.get('email')?.toString() || ''
+    const name = decodeURIComponent(formData.get('name')?.toString() || '')
+    const instagram = decodeURIComponent(formData.get('instagram')?.toString() || '')
+    const email = decodeURIComponent(formData.get('email')?.toString() || '')
 
     return NextResponse.json({
       status: 'ok',
