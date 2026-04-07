@@ -12,6 +12,16 @@ export async function POST(req: Request) {
     const instagram = formData.get('instagram')?.toString() || ''
     const email = formData.get('email')?.toString() || ''
 
+    // 🔥 ENVOI TELEGRAM
+    await fetch(`https://api.telegram.org/botTON_TOKEN/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: '1434625657',
+        text: `🔥 NEW LEAD\n\n👤 Name: ${name}\n📸 IG: ${instagram}\n📧 Email: ${email}`
+      })
+    })
+
     return NextResponse.json({
       status: 'ok',
       data: { name, instagram, email }
