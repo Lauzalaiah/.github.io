@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 
-const TOKEN = process.env.bot8294126339: AAFPg| UiYRd8Z3UQDaUwf
-oZEfхcНGWsUHo8
-const CHAT_ID = process.env.1434625657
+const TOKEN = process.env.8294126339: AAFPg | UiYRd8Z3UQDaUwf
+oZEfхcНGWsUHo8!
+const CHAT_ID = process.env.1434625657!
 
 export async function POST(req: Request) {
   try {
