@@ -34,6 +34,7 @@ export async function POST(req: Request) {
     )
 
     const telegramData = await telegramRes.json()
+    console.log("TELEGRAM STATUS:", telegramRes.status)
     console.log("TELEGRAM RESPONSE:", telegramData)
 
     return NextResponse.json({ status: 'ok' })
