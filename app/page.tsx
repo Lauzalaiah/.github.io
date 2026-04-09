@@ -1,15 +1,30 @@
 'use client'
+import { useState } from 'react'
+
 export default function Home() {
+
+  const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: any) {
     e.preventDefault()
 
+    setLoading(true)
+
     const formData = new FormData(e.target)
 
-    await fetch('/api/form', {
+    const res = await fetch('/api/form', {
       method: 'POST',
       body: formData
     })
+
+    setLoading(false)
+
+    if (res.ok) {
+      alert('Application sent successfully 🚀')
+      e.target.reset()
+    } else {
+      alert('Error, try again')
+    }
   }
 
   return (
@@ -81,9 +96,10 @@ export default function Home() {
 
           <button
             type="submit"
-            className="w-full bg-[#c9a050] text-black py-3 font-semibold hover:opacity-90 transition"
+            disabled={loading}
+            className="w-full bg-[#c9a050] text-black py-3 font-semibold hover:opacity-90 transition disabled:opacity-50"
           >
-            🚀 Apply Now
+            {loading ? 'Sending...' : '🚀 Apply Now'}
           </button>
 
           <p className="text-xs text-[#777] text-center">
