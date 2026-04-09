@@ -8,6 +8,8 @@ export default function Home() {
   async function handleSubmit(e: any) {
     e.preventDefault()
 
+    if (loading) return // ✅ anti double clic
+
     setLoading(true)
 
     const formData = new FormData(e.target)
@@ -33,19 +35,16 @@ export default function Home() {
       {/* HERO */}
       <section className="text-center px-6 pt-28 pb-20">
 
-        {/* PREUVE */}
         <div className="text-sm text-[#b8a88a] space-y-1 mb-6">
           <p>Trusted by 20+ creators</p>
           <p>$500k+ generated</p>
           <p>Top 1% agency</p>
         </div>
 
-        {/* TITLE */}
         <h1 className="text-4xl md:text-5xl font-serif text-[#c9a050] mb-6 leading-tight">
           We Help Creators <br /> Grow Their Income Online
         </h1>
 
-        {/* BENEFITS */}
         <div className="mt-6 space-y-2 text-[#d4c4a4] text-sm">
           <p>✔ We handle your DMs</p>
           <p>✔ We grow your audience</p>
@@ -53,7 +52,6 @@ export default function Home() {
           <p>✔ You focus on content</p>
         </div>
 
-        {/* CTA */}
         <a
           href="#apply"
           className="inline-block mt-8 px-8 py-3 bg-[#c9a050] text-black font-semibold rounded-md hover:opacity-90 transition"
@@ -61,7 +59,6 @@ export default function Home() {
           Apply for Private Management →
         </a>
 
-        {/* URGENCE */}
         <p className="text-xs text-[#b8a88a] mt-4">
           Limited spots available • We only accept selected creators
         </p>
