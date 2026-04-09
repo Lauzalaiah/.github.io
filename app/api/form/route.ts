@@ -12,8 +12,23 @@ export async function POST(req: Request) {
     const formData = await req.formData()
 
     const name = formData.get('name')?.toString() || ''
-    const instagram = formData.get('instagram')?.toString() || ''
+    const instagramRaw = formData.get('instagram')?.toString() || ''
     const email = formData.get('email')?.toString() || ''
+
+    // 🔧 clean instagram
+    const instagram = instagramRaw
+      .replace('https://instagram.com/', '')
+      .replace('http://instagram.com/', '')
+      .replace('@', '')
+      .trim()
+
+    // ❌ sécurité champs
+    if (!name || !instagram || !email) {
+      return NextResponse.json(
+        { status: 'error', message: 'Missing fields' },
+        { status: 400 }
+      )
+    }
 
     // 🔥 SCORING
     let score = 'LOW'
@@ -22,9 +37,27 @@ export async function POST(req: Request) {
       score = 'HIGH'
     }
 
-    // 🌍 (placeholder)
-    const country = 'Unknown'
+    // 🌍 GEO DETECTION (Vercel)
+    const countryCode =
+      req.headers.get('x-vercel-ip-country') || 'Unknown'
 
+    const countryMap: any = {
+      FR: 'France',
+      US: 'United States',
+      GB: 'United Kingdom',
+      CA: 'Canada',
+      AU: 'Australia'
+    }
+
+    const country =
+      countryCode && countryCode !== 'Unknown'
+        ? countryMap[countryCode] || countryCode
+        : 'Not detected'
+
+    // 📡 IP tracking
+    const ip = req.headers.get('x-forwarded-for') || 'Unknown'
+
+    // 📩 MESSAGE TELEGRAM
     const message = `🔥 NEW CREATOR LEAD
 
 👤 Name: ${name}
@@ -32,7 +65,8 @@ export async function POST(req: Request) {
 📧 Email: ${email}
 
 ⚡ Priority: ${score}
-🌍 Country: ${country}`
+🌍 Country: ${country}
+📡 IP: ${ip}`
 
     const telegramRes = await fetch(
       `https://api.telegram.org/bot${TOKEN}/sendMessage`,
@@ -55,7 +89,12 @@ export async function POST(req: Request) {
           }
         })
       }
-    ) // ✅ ICI
+    )
+
+    // ❌ gestion erreur Telegram
+    if (!telegramRes.ok) {
+      throw new Error('Telegram API error')
+    }
 
     const telegramData = await telegramRes.json()
 
