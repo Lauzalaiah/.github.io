@@ -1,4 +1,16 @@
 export default function Home() {
+
+  async function handleSubmit(e: any) {
+    e.preventDefault()
+
+    const formData = new FormData(e.target)
+
+    await fetch('/api/form', {
+      method: 'POST',
+      body: formData
+    })
+  }
+
   return (
     <main className="min-h-screen bg-[#0a0705] text-white">
 
@@ -42,11 +54,8 @@ export default function Home() {
 
       {/* FORM */}
       <section id="apply" className="px-6 pb-20 max-w-md mx-auto">
-        <form
-          action="/api/form"
-          method="POST"
-          className="space-y-4"
-        >
+        <form onSubmit={handleSubmit} className="space-y-4">
+
           <input
             name="name"
             placeholder="Your name"
@@ -62,21 +71,12 @@ export default function Home() {
           />
 
           <input
-            name="country"
-            placeholder="Your country"
-            required
-            className="w-full p-3 bg-transparent border border-[#333] text-white"
-          />
-
-          <input
             name="email"
-            placeholder="Your email"
             type="email"
+            placeholder="Your email"
             required
             className="w-full p-3 bg-transparent border border-[#333] text-white"
           />
-
-          <input type="hidden" name="score" value="LOW" />
 
           <button
             type="submit"
@@ -88,6 +88,7 @@ export default function Home() {
           <p className="text-xs text-[#777] text-center">
             Takes less than 30 seconds • No commitment
           </p>
+
         </form>
       </section>
 
