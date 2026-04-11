@@ -4,6 +4,8 @@ export async function POST(req: Request) {
   try {
     const update = await req.json()
 
+    console.log('FULL UPDATE:', JSON.stringify(update, null, 2))
+
     console.log('UPDATE:', JSON.stringify(update))
 
     const TOKEN = process.env.TELEGRAM_BOT_TOKEN
