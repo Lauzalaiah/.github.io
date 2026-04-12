@@ -21,6 +21,8 @@ export async function POST(req: Request) {
       body: JSON.stringify(body)
     })
 
+    console.log("✅ SENT TO MAKE")
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200
     })
