@@ -23,9 +23,8 @@ export async function POST(req: Request) {
 
     console.log("✅ SENT TO MAKE")
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200
-    })
+    // ✅ RETURN ICI (unique)
+    return new Response("OK")
 
   } catch (err) {
     console.error(err)
