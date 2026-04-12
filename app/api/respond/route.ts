@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     console.log("BODY:", body)
 
     // 📊 envoi vers Make
-    await fetch("https://hook.eu1.make.com/9dl5ej6usplkz27oggvri5smtits63z", {
+    await fetch("https://hook.eu1.make.com/9dl5ej6usplkz27oggvri5smtits63za", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
