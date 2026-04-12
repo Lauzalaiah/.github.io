@@ -10,6 +10,8 @@ export async function POST(req: Request) {
     const body = await req.json()
     console.log("BODY:", body)
 
+    console.log("🚀 SENDING TO MAKE...")
+
     // 📊 envoi vers Make
     await fetch("https://hook.eu1.make.com/9dl5ej6usplkz27oggvri5smtits63za", {
       method: "POST",
