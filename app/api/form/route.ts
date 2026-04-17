@@ -9,11 +9,11 @@ export async function POST(req: Request) {
     const email = formData.get('email')?.toString() || ''
 
     const message = `
-New Lead 🚀
+🚀 New Lead OFM
 
-Name: ${name}
-Instagram: ${instagram}
-Email: ${email}
+👤 Name: ${name}
+📸 Instagram: ${instagram}
+📧 Email: ${email}
 `
 
     const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
@@ -21,19 +21,21 @@ Email: ${email}
 
     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         chat_id: CHAT_ID,
         text: message,
       }),
     })
 
-    return NextResponse.json({ status: 'success' })
+    return NextResponse.json({ success: true })
   } catch (error: any) {
     console.error('API ERROR:', error)
 
     return NextResponse.json(
-      { status: 'error', message: error?.message },
+      { success: false, error: error.message },
       { status: 500 }
     )
   }
