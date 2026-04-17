@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
 import crypto from "crypto"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY!)
 
 // Use the service role key to bypass RLS for account creation
 const supabaseAdmin = createClient(
