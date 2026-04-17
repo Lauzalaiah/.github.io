@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { stripe } from "@/lib/stripe"
+import Stripe from "stripe"
 import { createClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
 import crypto from "crypto"
@@ -33,6 +33,7 @@ export async function POST(request: Request) {
 
   let event
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
     event = stripe.webhooks.constructEvent(
       body,
       sig,
