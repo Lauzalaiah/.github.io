@@ -1,42 +1,73 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const formData = await req.formData()
+    let body;
 
-    const name = formData.get('name')?.toString() || ''
-    const instagram = formData.get('instagram')?.toString() || ''
-    const email = formData.get('email')?.toString() || ''
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid JSON" },
+        { status: 400 }
+      );
+    }
 
-    const message = `
-🚀 New Lead OFM
+    const { name, instagram, country, email } = body;
 
-👤 Name: ${name}
-📸 Instagram: ${instagram}
-📧 Email: ${email}
-`
+    if (!name || !instagram || !country || !email) {
+      return NextResponse.json(
+        { error: "Missing fields" },
+        { status: 400 }
+      );
+    }
 
-    const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
-    const CHAT_ID = process.env.TELEGRAM_CHAT_ID
+    const token = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
 
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: CHAT_ID,
-        text: message,
-      }),
-    })
+    if (!token || !chatId) {
+      return NextResponse.json(
+        { error: "Missing Telegram config" },
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json({ success: true })
-  } catch (error: any) {
-    console.error('API ERROR:', error)
+    const message = `🔥 NEW LEAD
+👤 ${name}
+📸 ${instagram}
+🌍 ${country}
+📧 ${email}`;
 
+    const telegramRes = await fetch(
+      `https://api.telegram.org/bot${token}/sendMessage`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+        }),
+      }
+    );
+
+    const data = await telegramRes.json();
+
+    if (!telegramRes.ok) {
+      return NextResponse.json(
+        { error: data },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success: true });
+
+  } catch (err: any) {
+    console.error(err);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { error: err.message },
       { status: 500 }
-    )
+    );
   }
 }

@@ -1,30 +1,20 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-serif',
-  display: 'swap',
-})
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-})
+const _playfair = Playfair_Display({ subsets: ["latin"], variable: '--font-serif' });
+const _inter = Inter({ subsets: ["latin"], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'Fansly Agency Mastery - Formation Premium',
-  description: 'Apprenez à gérer une agence Fansly de A à Z avec nos 10 modules de formation premium.',
+  title: 'Léo OFM Élite | Scale Creators to $10k+/Month',
+  description: 'We help creators scale to $10k+/month on Fansly using proven marketing and monetization systems.',
+  generator: 'v0.app',
   icons: {
-    icon: '/favicon.png',
-    apple: '/favicon.png',
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
   },
-}
-
-export const viewport: Viewport = {
-  themeColor: '#1a2e1a',
 }
 
 export default function RootLayout({
@@ -33,9 +23,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr">
-      <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
+    <html lang="en">
+      <body className={`${_playfair.variable} ${_inter.variable} font-sans antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   )

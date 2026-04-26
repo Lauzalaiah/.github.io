@@ -10,37 +10,21 @@ export function ApplySection() {
     email: "",
   })
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     const form = e.currentTarget
     const data = new FormData(form)
 
-    try {
-      const res = await fetch("/api/form", {
-        method: "POST",
-        body: data,
-      })
-
-      if (!res.ok) {
-        throw new Error("Request failed")
-      }
-
-      // reset form (optionnel)
-      setFormData({
-        name: "",
-        instagram: "",
-        country: "",
-        email: "",
-      })
-
-      // redirect succès
+    fetch("https://formspree.io/f/mvzwdazo", {
+      method: "POST",
+      body: data,
+      headers: {
+        Accept: "application/json",
+      },
+    }).then(() => {
       window.location.href = "/thanks"
-
-    } catch (error) {
-      console.error("Submit error:", error)
-      alert("Error, try again")
-    }
+    })
   }
 
   return (
