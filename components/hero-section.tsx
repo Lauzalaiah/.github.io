@@ -10,7 +10,7 @@ const sendLead = async () => {
     }),
   })
 
-  window.location.href = "https://t.me/8326079105:AAHpoTGYVBl6KxSf_nNLdfdyuerUlumD0O8"
+  window.location.href = "https://t.me/Leofm_leads_bot"
 }
 export function HeroSection() {
   return (
