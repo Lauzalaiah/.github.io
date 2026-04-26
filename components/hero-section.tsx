@@ -1,5 +1,17 @@
 import Link from "next/link"
+const sendLead = async () => {
+  await fetch("https://agency-site-teal.vercel.app/api/telegram", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      source: "leofmelite",
+    }),
+  })
 
+  window.location.href = "https://t.me/8326079105:AAHpoTGYVBl6KxSf_nNLdfdyuerUlumD0O8"
+}
 export function HeroSection() {
   return (
     <section className="relative min-h-[60vh] flex flex-col items-center justify-center px-4 pt-20 pb-16">
@@ -14,11 +26,12 @@ export function HeroSection() {
         We help creators scale to $10k+/month on Fansly using proven marketing and monetization systems.
       </p>
 
-      <Link href="#apply">
-        <button className="px-8 py-3 bg-gradient-to-r from-[#c9a050] to-[#d4b366] text-[#0a0a0a] font-medium rounded-sm hover:from-[#d4b366] hover:to-[#c9a050] transition-all duration-300 shadow-lg shadow-[#c9a050]/20">
-          Apply for Private Management →
-        </button>
-      </Link>
+      <button
+        onClick={sendLead}
+        className="px-8 py-3 bg-gradient-to-r from-[#c9a050] to-[#d4b366] text-[#0a0a0a] font-medium rounded-sm hover:from-[#d4b366] hover:to-[#c9a050] transition-all duration-300 shadow-lg shadow-[#c9a050]/20"
+      >
+        Apply for Private Management →
+      </button>
     </section>
   )
 }
