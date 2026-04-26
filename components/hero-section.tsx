@@ -27,7 +27,9 @@ export function HeroSection() {
       </p>
 
       <button
-        onClick={sendLead}
+        onClick={() => {
+          document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" })
+        }}
         className="px-8 py-3 bg-gradient-to-r from-[#c9a050] to-[#d4b366] text-[#0a0a0a] font-medium rounded-sm hover:from-[#d4b366] hover:to-[#c9a050] transition-all duration-300 shadow-lg shadow-[#c9a050]/20"
       >
         Apply for Private Management →
