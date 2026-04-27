@@ -1,21 +1,9 @@
-import Link from "next/link"
-const sendLead = async () => {
-  await fetch("https://agency-site-teal.vercel.app/api/telegram", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      source: "leofmelite",
-    }),
-  })
+"use client"
 
-  window.location.href = "https://t.me/Leofm_leads_bot"
-}
 export function HeroSection() {
   return (
     <section className="relative min-h-[60vh] flex flex-col items-center justify-center px-4 pt-20 pb-16">
-      {/* Glow effect */}
+
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#c9a050]/10 blur-[120px] rounded-full" />
 
       <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#c9a050] mb-6 tracking-wide">
@@ -27,15 +15,18 @@ export function HeroSection() {
       </p>
 
       <button
+        type="button"
         onClick={() => {
-          document.getElementById("apply")?.scrollIntoView({
-            behavior: "smooth",
-          });
+          const el = document.getElementById("apply")
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" })
+          }
         }}
-        className="px-8 py-3 bg-[#c9a050] text-black"
+        className="px-8 py-3 bg-[#c9a050] text-black cursor-pointer"
       >
         Apply →
       </button>
+
     </section>
   )
 }

@@ -10,7 +10,7 @@ export function ApplySection() {
     email: "",
   })
 
-  const [loading, setLoading] = useState(false) // 👈 AJOUT ICI
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -19,7 +19,6 @@ export function ApplySection() {
     setLoading(true)
 
     try {
-      // TRACKING SUBMIT
       await fetch("/api/track", {
         method: "POST",
         headers: {
@@ -28,7 +27,6 @@ export function ApplySection() {
         body: JSON.stringify({ event: "form_submit" }),
       })
 
-      // ENVOI TELEGRAM
       const leadRes = await fetch("/api/lead", {
         method: "POST",
         headers: {
@@ -39,22 +37,28 @@ export function ApplySection() {
           instagram: formData.instagram,
           country: formData.country,
           email: formData.email,
-          source: window.location.href,
+          source: document.referrer || "direct",
           sessionId: crypto.randomUUID(),
         }),
       })
 
-      const leadData = await leadRes.json()
+      // SAFE JSON
+      let leadData = null
+      try {
+        leadData = await leadRes.json()
+      } catch {
+        console.log("No JSON response")
+      }
 
       console.log("LEAD RESPONSE:", leadData)
 
-      // STOP si Telegram échoue
       if (!leadRes.ok) {
         alert("Erreur envoi Telegram")
+        setLoading(false)
         return
       }
 
-      // FORMSPREE (backup)
+      // FORMSPREE BACKUP
       const form = e.currentTarget
       const data = new FormData(form)
 
@@ -66,22 +70,24 @@ export function ApplySection() {
         },
       })
 
-      // REDIRECTION
       window.location.href = "/thanks"
 
     } catch (err) {
       console.error("ERROR:", err)
       alert("Erreur réseau")
+      setLoading(false)
     }
   }
 
   return (
     <section id="apply" className="relative py-16 px-4 pb-24">
+
       <h2 className="font-serif text-3xl md:text-4xl text-center text-[#c9a050] mb-10">
         Apply for Private Management →
       </h2>
 
       <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
+
         <input type="hidden" name="_subject" value="New Application - Leo OFM Elite" />
         <input type="hidden" name="_captcha" value="false" />
 
@@ -140,17 +146,19 @@ export function ApplySection() {
         <div className="flex justify-center">
           <button
             type="submit"
-            disabled={loading} // 👈 AJOUT ICI
+            disabled={loading}
             className="px-12 py-3 bg-[#c9a050] text-black"
           >
             {loading ? "Sending..." : "Submit Application"}
           </button>
         </div>
+
       </form>
 
       <p className="text-center text-[#6a6a6a] text-sm mt-16">
         © 2026 We Scale Creators to $10k+/Month. All rights reserved.
       </p>
+
     </section>
   )
 }
