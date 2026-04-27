@@ -63,15 +63,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // 🧠 Heure locale propre
-    const date = new Date();
-    const formattedDate = date.toLocaleString("fr-FR", {
+    const formattedDate = new Date().toLocaleString("fr-FR", {
       timeZone: "UTC",
     });
 
-    // 🧠 Message TELEGRAM OPTIMISÉ AGENCE
-    const message = `
-🔥 NEW LEAD
+    // ✅ MESSAGE CLEAN (PAS DE SAUT AU DÉBUT)
+    const message = `🔥 NEW LEAD
 
 👤 Name: ${name}
 📸 IG: ${instagram}
@@ -84,8 +81,7 @@ export async function POST(req: Request) {
 🌐 IP: ${client.ip}
 📱 Device: ${client.userAgent}
 
-⏱ Time: ${formattedDate}
-`;
+⏱ Time: ${formattedDate}`;
 
     const telegramRes = await fetch(
       `https://api.telegram.org/bot${token}/sendMessage`,

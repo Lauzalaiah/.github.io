@@ -13,9 +13,6 @@ export function ApplySection() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const form = e.currentTarget
-    const data = new FormData(form)
-
     // ✅ TRACKING SUBMIT
     await fetch("/api/track", {
       method: "POST",
@@ -25,7 +22,26 @@ export function ApplySection() {
       body: JSON.stringify({ event: "form_submit" }),
     })
 
-    // ✅ ENVOI FORMSPREE
+    // ✅ ENVOI LEAD → BACKEND (TELEGRAM)
+    await fetch("/api/lead", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        instagram: formData.instagram,
+        country: formData.country,
+        email: formData.email,
+        source: "tiktok", // tu peux rendre ça dynamique après
+        sessionId: crypto.randomUUID(),
+      }),
+    })
+
+    // ✅ (OPTIONNEL) ENVOI FORMSPREE
+    const form = e.currentTarget
+    const data = new FormData(form)
+
     await fetch("https://formspree.io/f/mvzwdazo", {
       method: "POST",
       body: data,
@@ -34,6 +50,7 @@ export function ApplySection() {
       },
     })
 
+    // ✅ REDIRECTION
     window.location.href = "/thanks"
   }
 
