@@ -28,11 +28,13 @@ export function HeroSection() {
 
       <button
         onClick={() => {
-          document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" })
+          document.getElementById("apply")?.scrollIntoView({
+            behavior: "smooth",
+          });
         }}
-        className="px-8 py-3 bg-gradient-to-r from-[#c9a050] to-[#d4b366] text-[#0a0a0a] font-medium rounded-sm hover:from-[#d4b366] hover:to-[#c9a050] transition-all duration-300 shadow-lg shadow-[#c9a050]/20"
+        className="px-8 py-3 bg-[#c9a050] text-black"
       >
-        Apply for Private Management →
+        Apply →
       </button>
     </section>
   )
