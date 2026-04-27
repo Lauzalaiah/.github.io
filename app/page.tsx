@@ -12,12 +12,10 @@ export default function Home() {
     e.preventDefault();
 
     if (loading) return;
-
     setLoading(true);
 
     try {
-
-      // ✅ TRACKING
+      // ✅ TRACKING SUBMIT
       await fetch("/api/track", {
         method: "POST",
         headers: {
@@ -26,7 +24,6 @@ export default function Home() {
         body: JSON.stringify({ event: "form_submit" }),
       });
 
-      // ✅ TON ENVOI NORMAL
       const res = await fetch("/api/form", {
         method: "POST",
         headers: {
@@ -41,8 +38,6 @@ export default function Home() {
       });
 
       if (res.ok) {
-        console.log("🚀 LEAD SENT SUCCESSFULLY");
-
         setName("");
         setInstagram("");
         setCountry("");
@@ -50,103 +45,81 @@ export default function Home() {
 
         setTimeout(() => {
           window.location.href = "/thanks";
-        }, 1500);
-
+        }, 1000);
       } else {
-        alert("❌ Erreur serveur");
         setLoading(false);
+        alert("Erreur serveur");
       }
-
-    } catch (err) {
-      alert("❌ Network error");
+    } catch {
       setLoading(false);
+      alert("Erreur réseau");
     }
   };
 
   return (
     <main className="min-h-screen bg-[#0a0705] text-white">
 
-      {/* HERO */}
       <section className="text-center px-6 pt-28 pb-20">
-
-        <div className="text-sm text-[#b8a88a] space-y-1 mb-6">
-          <p>Trusted by 20+ creators</p>
-          <p>$500k+ generated</p>
-          <p>Top 1% agency</p>
-        </div>
-
-        <h1 className="text-4xl md:text-5xl font-serif text-[#c9a050] mb-6 leading-tight">
-          We Help Creators <br /> Grow Their Income Online
+        <h1 className="text-4xl text-[#c9a050] mb-6">
+          We Help Creators Grow Their Income
         </h1>
-
-        <div className="mt-6 space-y-2 text-[#d4c4a4] text-sm">
-          <p>✔ We handle your DMs</p>
-          <p>✔ We grow your audience</p>
-          <p>✔ We increase your revenue</p>
-          <p>✔ You focus on content</p>
-        </div>
 
         <a
           href="#apply"
-          className="inline-block mt-8 px-8 py-3 bg-[#c9a050] text-black font-semibold rounded-md hover:opacity-90 transition"
+          className="inline-block mt-8 px-8 py-3 bg-[#c9a050] text-black"
         >
-          Apply for Private Management →
+          Apply →
         </a>
-
-        <p className="text-xs text-[#b8a88a] mt-4">
-          Limited spots available • We only accept selected creators
-        </p>
-
       </section>
 
-      {/* FORM */}
       <section id="apply" className="px-6 pb-20 max-w-md mx-auto">
-        <form onSubmit={handleSubmit} autoComplete="off" className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
 
           <input
             value={name}
-            placeholder="Your name"
-            required
+            placeholder="Name"
             onChange={(e) => setName(e.target.value)}
-            className="w-full p-3 bg-transparent border border-[#333] text-white"
+            className="w-full p-3 border"
           />
 
           <input
             value={instagram}
-            placeholder="@yourinstagram"
-            required
+            placeholder="@instagram"
             onChange={(e) => setInstagram(e.target.value)}
-            className="w-full p-3 bg-transparent border border-[#333] text-white"
+            className="w-full p-3 border"
           />
 
           <input
             value={country}
-            placeholder="Your country"
-            required
+            placeholder="Country"
             onChange={(e) => setCountry(e.target.value)}
-            className="w-full p-3 bg-transparent border border-[#333] text-white"
+            className="w-full p-3 border"
           />
 
           <input
             value={email}
-            placeholder="Your email"
+            placeholder="Email"
             type="email"
-            required
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 bg-transparent border border-[#333] text-white"
+            className="w-full p-3 border"
           />
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#c9a050] text-black py-3 font-semibold hover:opacity-90 transition disabled:opacity-50"
+            onClick={() => {
+              fetch("/api/track", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ event: "apply_click" }),
+              })
+            }}
+            className="w-full bg-[#c9a050] text-black py-3"
           >
-            {loading ? "Sending..." : "🚀 Apply Now"}
+            {loading ? "Sending..." : "Apply Now"}
           </button>
-
-          <p className="text-xs text-[#777] text-center">
-            Takes less than 30 seconds • No commitment
-          </p>
 
         </form>
       </section>
