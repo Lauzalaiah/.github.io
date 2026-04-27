@@ -19,6 +19,15 @@ export function ApplySection() {
     setLoading(true)
 
     try {
+      const form = e.currentTarget
+      const data = new FormData(form)
+
+      const name = data.get("name") as string
+      const instagram = data.get("instagram") as string
+      const country = data.get("country") as string
+      const email = data.get("email") as string
+
+      // TRACKING
       await fetch("/api/track", {
         method: "POST",
         headers: {
@@ -27,41 +36,37 @@ export function ApplySection() {
         body: JSON.stringify({ event: "form_submit" }),
       })
 
+      // TELEGRAM
       const leadRes = await fetch("/api/lead", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: formData.name,
-          instagram: formData.instagram,
-          country: formData.country,
-          email: formData.email,
-          source: document.referrer || "direct",
+          name,
+          instagram,
+          country,
+          email,
+          source: window.location.href,
           sessionId: crypto.randomUUID(),
         }),
       })
 
-      // SAFE JSON
       let leadData = null
       try {
         leadData = await leadRes.json()
-      } catch {
-        console.log("No JSON response")
-      }
+      } catch { }
 
       console.log("LEAD RESPONSE:", leadData)
 
+      // ❌ stop si erreur Telegram
       if (!leadRes.ok) {
         alert("Erreur envoi Telegram")
         setLoading(false)
         return
       }
 
-      // FORMSPREE BACKUP
-      const form = e.currentTarget
-      const data = new FormData(form)
-
+      // FORMSPREE backup
       await fetch("https://formspree.io/f/mvzwdazo", {
         method: "POST",
         body: data,
@@ -70,6 +75,7 @@ export function ApplySection() {
         },
       })
 
+      // ✅ redirect
       window.location.href = "/thanks"
 
     } catch (err) {
