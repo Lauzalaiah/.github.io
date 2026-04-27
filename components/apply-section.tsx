@@ -10,12 +10,22 @@ export function ApplySection() {
     email: "",
   })
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     const form = e.currentTarget
     const data = new FormData(form)
 
+    // ✅ TRACKING AVANT ENVOI
+    await fetch("/api/track", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ event: "form_submit" }),
+    })
+
+    // ✅ ENVOI FORMSPREE
     fetch("https://formspree.io/f/mvzwdazo", {
       method: "POST",
       body: data,

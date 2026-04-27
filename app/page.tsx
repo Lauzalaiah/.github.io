@@ -16,8 +16,17 @@ export default function Home() {
     setLoading(true);
 
     try {
-      console.log({ name, instagram, country, email });
 
+      // ✅ TRACKING
+      await fetch("/api/track", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ event: "form_submit" }),
+      });
+
+      // ✅ TON ENVOI NORMAL
       const res = await fetch("/api/form", {
         method: "POST",
         headers: {
@@ -29,37 +38,22 @@ export default function Home() {
           country: country.trim(),
           email: email.trim(),
         }),
-      }); // ✅ ICI il manquait la parenthèse
+      });
 
       if (res.ok) {
-        console.log("🚀 LEAD SENT SUCCESSFULLY", {
-          name,
-          instagram,
-          country,
-          email,
-          timestamp: new Date().toISOString(),
-        });
+        console.log("🚀 LEAD SENT SUCCESSFULLY");
 
-        // reset
         setName("");
         setInstagram("");
         setCountry("");
         setEmail("");
 
-        // delay pour voir logs
         setTimeout(() => {
           window.location.href = "/thanks";
         }, 1500);
 
       } else {
-        let data;
-        try {
-          data = await res.json();
-        } catch {
-          data = null;
-        }
-
-        alert("❌ " + (data?.error || "Erreur serveur"));
+        alert("❌ Erreur serveur");
         setLoading(false);
       }
 
