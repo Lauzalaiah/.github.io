@@ -1,74 +1,52 @@
-import { NextResponse } from "next/server";
-
-// 🔥 force l’exécution côté serveur (pas de cache)
-export const dynamic = "force-dynamic";
+import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
-  console.log("API HIT");
-
   try {
-    const body = await req.json();
+    const body = await req.json()
 
-    const { name, instagram, country, email, source, sessionId } = body;
+    const { name, instagram, country, email, source, sessionId } = body
 
-    const token = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
-
-    // 🔍 DEBUG
-    console.log("TOKEN:", token);
-    console.log("CHAT:", chatId);
-    console.log("BODY:", body);
-
-    if (!token || !chatId) {
+    // ✅ validation simple
+    if (!name || !instagram || !country || !email) {
       return NextResponse.json(
-        { error: "Missing Telegram config" },
-        { status: 500 }
-      );
+        { error: "Missing fields" },
+        { status: 400 }
+      )
     }
 
-    const message = `🔥 NEW LEAD
+    // ✅ TELEGRAM
+    const message = `
+🔥 NEW LEAD
 
 👤 Name: ${name}
 📸 IG: ${instagram}
 🌍 Country: ${country}
 📧 Email: ${email}
 
-📊 Source: ${source || "unknown"}
-🆔 Session: ${sessionId || "N/A"}`;
+📊 Source: ${source}
+🆔 Session: ${sessionId}
+    `
 
-    const res = await fetch(
-      `https://api.telegram.org/bot${token}/sendMessage`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-        }),
-      }
-    );
+    await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chat_id: process.env.TELEGRAM_CHAT_ID,
+        text: message,
+      }),
+    })
 
-    const data = await res.json();
+    // ✅ TRÈS IMPORTANT
+    return NextResponse.json({ success: true })
 
-    console.log("TELEGRAM RESPONSE:", data);
-
-    if (!res.ok) {
-      return NextResponse.json(
-        { error: data },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ success: true });
-
-  } catch (err: any) {
-    console.error("ERROR:", err);
+  } catch (err) {
+    console.error("API ERROR:", err)
 
     return NextResponse.json(
-      { error: err.message || "Server error" },
+      { error: "Internal error" },
       { status: 500 }
-    );
+    )
   }
 }
