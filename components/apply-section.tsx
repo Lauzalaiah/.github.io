@@ -27,31 +27,45 @@ export function ApplySection() {
       const country = data.get("country") as string
       const email = data.get("email") as string
 
-      // TRACKING
-      await fetch("/api/track", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ event: "form_submit" }),
-      })
+      // ✅ TRACKING SAFE
+      try {
+        await fetch("/api/track", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ event: "form_submit" }),
+        })
+      } catch {
+        console.log("Tracking failed (ignored)")
+      }
 
-      // TELEGRAM
-      const leadRes = await fetch("/api/lead", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          instagram,
-          country,
-          email,
-          source: window.location.href,
-          sessionId: crypto.randomUUID(),
-        }),
-      })
+      // ✅ TELEGRAM (IMPORTANT)
+      let leadRes
+      try {
+        leadRes = await fetch("/api/lead", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            instagram,
+            country,
+            email,
+            source: window.location.href,
+            sessionId: crypto.randomUUID(),
+          }),
+        })
+      } catch (err) {
+        console.error("API lead crash:", err)
 
+        alert("We couldn’t process your application. Contact us directly on Telegram.")
+        window.location.href = "https://t.me/Leofm_leads_bot"
+        return
+      }
+
+      // 🔒 SAFE JSON
       let leadData = null
       try {
         leadData = await leadRes.json()
@@ -59,30 +73,36 @@ export function ApplySection() {
 
       console.log("LEAD RESPONSE:", leadData)
 
-      // ❌ stop si erreur Telegram
+      // ❌ erreur backend
       if (!leadRes.ok) {
         alert("We couldn’t process your application. Contact us directly on Telegram.")
         window.location.href = "https://t.me/Leofm_leads_bot"
-        setLoading(false)
         return
       }
 
-      // FORMSPREE backup
-      await fetch("https://formspree.io/f/mvzwdazo", {
-        method: "POST",
-        body: data,
-        headers: {
-          Accept: "application/json",
-        },
-      })
+      // ✅ FORMSPREE (optionnel)
+      try {
+        await fetch("https://formspree.io/f/mvzwdazo", {
+          method: "POST",
+          body: data,
+          headers: {
+            Accept: "application/json",
+          },
+        })
+      } catch {
+        console.log("Formspree failed (ignored)")
+      }
 
-      // ✅ redirect
+      // ✅ SUCCESS
       window.location.href = "/thanks"
 
     } catch (err) {
-      console.error("ERROR:", err)
+      console.error("GLOBAL ERROR:", err)
+
       alert("We couldn’t process your application. Contact us directly on Telegram.")
       window.location.href = "https://t.me/Leofm_leads_bot"
+    } finally {
+      setLoading(false)
     }
   }
 
