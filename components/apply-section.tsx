@@ -33,10 +33,10 @@ export function ApplySection() {
         instagram: formData.instagram,
         country: formData.country,
         email: formData.email,
-        source: "tiktok", // tu peux rendre ça dynamique après
+        source: document.referrer || "direct",
         sessionId: crypto.randomUUID(),
       }),
-    })
+    });
 
     // ✅ (OPTIONNEL) ENVOI FORMSPREE
     const form = e.currentTarget
