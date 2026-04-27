@@ -10,8 +10,13 @@ export function ApplySection() {
     email: "",
   })
 
+  const [loading, setLoading] = useState(false) // 👈 AJOUT ICI
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if (loading) return
+    setLoading(true)
 
     try {
       // TRACKING SUBMIT
@@ -34,7 +39,7 @@ export function ApplySection() {
           instagram: formData.instagram,
           country: formData.country,
           email: formData.email,
-          source: document.referrer || "direct",
+          source: window.location.href,
           sessionId: crypto.randomUUID(),
         }),
       })
@@ -135,18 +140,10 @@ export function ApplySection() {
         <div className="flex justify-center">
           <button
             type="submit"
-            onClick={() => {
-              fetch("/api/track", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ event: "apply_click" }),
-              })
-            }}
+            disabled={loading} // 👈 AJOUT ICI
             className="px-12 py-3 bg-[#c9a050] text-black"
           >
-            Submit Application
+            {loading ? "Sending..." : "Submit Application"}
           </button>
         </div>
       </form>
