@@ -1,5 +1,18 @@
 import { NextResponse } from "next/server";
 
+function getClientInfo(req: Request) {
+  const headers = req.headers;
+
+  return {
+    ip:
+      headers.get("x-forwarded-for") ||
+      headers.get("x-real-ip") ||
+      "unknown",
+    userAgent: headers.get("user-agent") || "unknown",
+    referer: headers.get("referer") || "direct",
+  };
+}
+
 export async function POST(req: Request) {
   try {
     let body;
@@ -13,18 +26,25 @@ export async function POST(req: Request) {
       );
     }
 
+    const client = getClientInfo(req);
+
+    // =========================
     // ✅ CAS 1 : TRACKING EVENT
+    // =========================
     if (body.event) {
       console.log("📊 EVENT TRACKED:", {
         event: body.event,
         timestamp: new Date().toISOString(),
+        ...client,
       });
 
       return NextResponse.json({ success: true });
     }
 
+    // =========================
     // ✅ CAS 2 : LEAD FORM
-    const { name, instagram, country, email } = body;
+    // =========================
+    const { name, instagram, country, email, source, sessionId } = body;
 
     if (!name || !instagram || !country || !email) {
       return NextResponse.json(
@@ -43,11 +63,29 @@ export async function POST(req: Request) {
       );
     }
 
-    const message = `🔥 NEW LEAD
-👤 ${name}
-📸 ${instagram}
-🌍 ${country}
-📧 ${email}`;
+    // 🧠 Heure locale propre
+    const date = new Date();
+    const formattedDate = date.toLocaleString("fr-FR", {
+      timeZone: "UTC",
+    });
+
+    // 🧠 Message TELEGRAM OPTIMISÉ AGENCE
+    const message = `
+🔥 NEW LEAD
+
+👤 Name: ${name}
+📸 IG: ${instagram}
+🌍 Country: ${country}
+📧 Email: ${email}
+
+📊 Source: ${source || client.referer}
+🆔 Session: ${sessionId || "N/A"}
+
+🌐 IP: ${client.ip}
+📱 Device: ${client.userAgent}
+
+⏱ Time: ${formattedDate}
+`;
 
     const telegramRes = await fetch(
       `https://api.telegram.org/bot${token}/sendMessage`,
