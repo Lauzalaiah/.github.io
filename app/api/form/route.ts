@@ -13,6 +13,17 @@ export async function POST(req: Request) {
       );
     }
 
+    // ✅ CAS 1 : TRACKING EVENT
+    if (body.event) {
+      console.log("📊 EVENT TRACKED:", {
+        event: body.event,
+        timestamp: new Date().toISOString(),
+      });
+
+      return NextResponse.json({ success: true });
+    }
+
+    // ✅ CAS 2 : LEAD FORM
     const { name, instagram, country, email } = body;
 
     if (!name || !instagram || !country || !email) {
@@ -66,7 +77,7 @@ export async function POST(req: Request) {
   } catch (err: any) {
     console.error(err);
     return NextResponse.json(
-      { error: err.message },
+      { error: err.message || "Server error" },
       { status: 500 }
     );
   }
