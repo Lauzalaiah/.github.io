@@ -4,43 +4,54 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    console.log("BODY:", body);
-
     const { name, instagram, country, email, source, sessionId } = body;
 
     const token = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
 
-    console.log("TOKEN:", token);
-    console.log("CHAT:", chatId);
-
     if (!token || !chatId) {
-      return NextResponse.json({ error: "Missing env" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Missing Telegram config" },
+        { status: 500 }
+      );
     }
 
     const message = `🔥 NEW LEAD
 
-👤 ${name}
-📸 ${instagram}
-🌍 ${country}
-📧 ${email}
+👤 Name: ${name}
+📸 IG: ${instagram}
+🌍 Country: ${country}
+📧 Email: ${email}
 
-📊 ${source}
-🆔 ${sessionId}`;
+📊 Source: ${source || "unknown"}
+🆔 Session: ${sessionId || "N/A"}`;
 
-    // 🔥 TEST TELEGRAM ULTRA SIMPLE
-    const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
-
-    const res = await fetch(url);
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+      }),
+    });
 
     const data = await res.json();
 
     console.log("TELEGRAM RESPONSE:", data);
 
-    return NextResponse.json({ success: true, data });
+    if (!res.ok) {
+      return NextResponse.json({ error: data }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
 
   } catch (err: any) {
     console.error("ERROR:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { error: err.message || "Server error" },
+      { status: 500 }
+    );
   }
 }
