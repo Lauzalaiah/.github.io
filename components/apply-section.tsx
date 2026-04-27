@@ -29,13 +29,8 @@ export function ApplySection() {
 
       // ✅ TRACKING SAFE
       try {
-        await fetch("/api/track", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ event: "form_submit" }),
-        })
+        // TRACKING DISABLED (fix erreur réseau)
+        console.log("Tracking skipped")
       } catch {
         console.log("Tracking failed (ignored)")
       }
