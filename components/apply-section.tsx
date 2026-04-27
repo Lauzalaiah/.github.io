@@ -61,7 +61,7 @@ export function ApplySection() {
 
       // ❌ stop si erreur Telegram
       if (!leadRes.ok) {
-        alert("Erreur envoi Telegram")
+        alert("We couldn’t process your application. Please try again or contact us directly on Telegram.")
         setLoading(false)
         return
       }
@@ -80,8 +80,7 @@ export function ApplySection() {
 
     } catch (err) {
       console.error("ERROR:", err)
-      alert("Erreur réseau")
-      setLoading(false)
+      alert("We couldn’t process your application. Please try again or contact us directly on Telegram.")
     }
   }
 
