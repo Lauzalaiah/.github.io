@@ -13,45 +13,61 @@ export function ApplySection() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    // ✅ TRACKING SUBMIT
-    await fetch("/api/track", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ event: "form_submit" }),
-    })
+    try {
+      // TRACKING SUBMIT
+      await fetch("/api/track", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ event: "form_submit" }),
+      })
 
-    // ✅ ENVOI LEAD → BACKEND (TELEGRAM)
-    await fetch("/api/lead", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: formData.name,
-        instagram: formData.instagram,
-        country: formData.country,
-        email: formData.email,
-        source: document.referrer || "direct",
-        sessionId: crypto.randomUUID(),
-      }),
-    });
+      // ENVOI TELEGRAM
+      const leadRes = await fetch("/api/lead", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          instagram: formData.instagram,
+          country: formData.country,
+          email: formData.email,
+          source: document.referrer || "direct",
+          sessionId: crypto.randomUUID(),
+        }),
+      })
 
-    // ✅ (OPTIONNEL) ENVOI FORMSPREE
-    const form = e.currentTarget
-    const data = new FormData(form)
+      const leadData = await leadRes.json()
 
-    await fetch("https://formspree.io/f/mvzwdazo", {
-      method: "POST",
-      body: data,
-      headers: {
-        Accept: "application/json",
-      },
-    })
+      console.log("LEAD RESPONSE:", leadData)
 
-    // ✅ REDIRECTION
-    window.location.href = "/thanks"
+      // STOP si Telegram échoue
+      if (!leadRes.ok) {
+        alert("Erreur envoi Telegram")
+        return
+      }
+
+      // FORMSPREE (backup)
+      const form = e.currentTarget
+      const data = new FormData(form)
+
+      await fetch("https://formspree.io/f/mvzwdazo", {
+        method: "POST",
+        body: data,
+        headers: {
+          Accept: "application/json",
+        },
+      })
+
+      // REDIRECTION
+      window.location.href = "/thanks"
+
+    } catch (err) {
+      console.error("ERROR:", err)
+      alert("Erreur réseau")
+    }
   }
 
   return (
