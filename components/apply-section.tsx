@@ -61,7 +61,8 @@ export function ApplySection() {
 
       // ❌ stop si erreur Telegram
       if (!leadRes.ok) {
-        alert("We couldn’t process your application. Please try again or contact us directly on Telegram.")
+        alert("We couldn’t process your application. Contact us directly on Telegram.")
+        window.location.href = "https://t.me/Leofm_leads_bot"
         setLoading(false)
         return
       }
@@ -80,7 +81,8 @@ export function ApplySection() {
 
     } catch (err) {
       console.error("ERROR:", err)
-      alert("We couldn’t process your application. Please try again or contact us directly on Telegram.")
+      alert("We couldn’t process your application. Contact us directly on Telegram.")
+      window.location.href = "https://t.me/Leofm_leads_bot"
     }
   }
 
